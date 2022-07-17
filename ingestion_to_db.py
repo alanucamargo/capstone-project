@@ -1,9 +1,33 @@
 from airflow.models import DAG
 from airflow.operators.dummy import DummyOperator
+#El PythonOperator nos permite ejecutar funciones Python dentro del workflow
+from airflow.operators.python import PythonOperator
 #El hoook de postgres para traernos datos
 from airflow.providers.postgres.hooks.postgres import PostgresHook
+#Con el operador creamos datos
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 from airflow.utils.dates import days_ago
+
+def ingest_data():
+    hoook = PostgresHook(postgres_conn_id='alan_conn')
+    hook.insert_rows(
+        table = 'monthly_charts_data',
+        rows = [
+            [
+                'Jan 2000',
+                1,
+                'The Weeknd',
+                'Out Of time',
+                100.01,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ]
+        ]
+    )
 
 with DAG(
     'db_ingestion', start_date=days_ago(1), schedule_interval='@once'
@@ -27,7 +51,7 @@ with DAG(
                     au INTEGER
                 )
         """)
-    load = DummyOperator(task_id='load')
+    load = PythonOperator(task_id='load', python_callable = ingest_data)
     end_workflow = DummyOperator(task_id='end_workflow')
 
     #We setup here the order of the tasks
