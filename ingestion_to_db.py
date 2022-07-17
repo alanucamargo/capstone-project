@@ -11,7 +11,7 @@ with DAG(
     start_workflow = DummyOperator(task_id='start_workflow')
     validate = DummyOperator(task_id='validate')
     prepare = PostgresOperator(task_id='prepare',
-        portgres_conn_id='alan_conn',
+        postgres_conn_id='alan_conn',
         sql="""
                 CREATE TABLE monthle_charts_data (
                     month VARCHAR(10) NOT NULL,
