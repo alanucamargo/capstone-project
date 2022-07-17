@@ -42,7 +42,7 @@ with DAG(
                     position INTEGER NOT NULL,
                     artist VARCHAR(100) NOT NULL,
                     song VARCHAR(100) NOT NULL,
-                    indicative_resume NUMERIC NOT NULL,
+                    indicative_revenue NUMERIC NOT NULL,
                     us INTEGER,
                     uk INTEGER,
                     de INTEGER,
