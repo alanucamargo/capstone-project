@@ -9,7 +9,7 @@ from airflow.providers.postgres.operators.postgres import PostgresOperator
 from airflow.utils.dates import days_ago
 
 def ingest_data():
-    hoook = PostgresHook(postgres_conn_id='alan_conn')
+    hook = PostgresHook(postgres_conn_id='alan_conn')
     hook.insert_rows(
         table = 'monthly_charts_data',
         rows = [
