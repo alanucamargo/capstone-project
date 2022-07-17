@@ -13,7 +13,7 @@ with DAG(
     prepare = PostgresOperator(task_id='prepare',
         postgres_conn_id='alan_conn',
         sql="""
-                CREATE TABLE monthle_charts_data (
+                CREATE TABLE monthly_charts_data (
                     month VARCHAR(10) NOT NULL,
                     position INTEGER NOT NULL,
                     artist VARCHAR(100) NOT NULL,
