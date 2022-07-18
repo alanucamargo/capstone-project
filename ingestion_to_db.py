@@ -9,6 +9,8 @@ from airflow.providers.postgres.operators.postgres import PostgresOperator
 from airflow.utils.dates import days_ago
 #Agregamos operadores que nos permitan que airflow tome distintas decisiones dependiendo de la respuesta de SQL
 from airflow.operators.sql import BranchSQLOperator
+#Agregamos la libreria que nos permita ejecutar una acción o otra dependiendo del paso del workflow
+from airflow.utils.trigger_rule import TriggerRule
 
 def ingest_data():
     hook = PostgresHook(postgres_conn_id='alan_conn')
@@ -67,7 +69,7 @@ with DAG(
         follow_task_ids_if_true = [clear.task_id],
         follow_task_ids_if_false = [continue_workflow.task_id]
     )
-    load = PythonOperator(task_id='load', python_callable = ingest_data)
+    load = PythonOperator(task_id='load', python_callable = ingest_data, trigger_rule = TriggerRule.ONE_SUCCESS)
     end_workflow = DummyOperator(task_id='end_workflow')
 
     #We setup here the order of the tasks
