@@ -11,6 +11,8 @@ from airflow.utils.dates import days_ago
 from airflow.operators.sql import BranchSQLOperator
 #Agregamos la libreria que nos permita ejecutar una acción o otra dependiendo del paso del workflow
 from airflow.utils.trigger_rule import TriggerRule
+#Agregamos la libreria para cargar el CSV desde el bucket
+from airflow.providers.google.cloud.sensors.gcs import GCSObjectExistenceSensor
 
 def ingest_data():
     hook = PostgresHook(postgres_conn_id='alan_conn')
@@ -37,7 +39,10 @@ with DAG(
     'db_ingestion', start_date=days_ago(1), schedule_interval='@once'
     ) as dag:
     start_workflow = DummyOperator(task_id='start_workflow')
-    validate = DummyOperator(task_id='validate')
+    validate = GCSObjectExistenceSensor(task_id='validate',
+        gcs_conn_id = 'gcs_default',
+        bucket_name = 'us-central1-de-bootcamp-786ac1aa-bucket',
+        bucket_key = 'chart-data.csv')
     prepare = PostgresOperator(task_id='prepare',
         postgres_conn_id='alan_conn',
         sql="""
