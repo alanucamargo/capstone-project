@@ -40,7 +40,7 @@ with DAG(
     ) as dag:
     start_workflow = DummyOperator(task_id='start_workflow')
     validate = GCSObjectExistenceSensor(task_id='validate',
-        gcs_conn_id = 'gcs_default',
+        gcp_conn_id = 'gcp_default',
         bucket_name = 'us-central1-de-bootcamp-786ac1aa-bucket',
         bucket_key = 'chart-data.csv')
     prepare = PostgresOperator(task_id='prepare',
