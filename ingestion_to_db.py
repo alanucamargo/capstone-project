@@ -7,6 +7,8 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 #Con el operador creamos datos
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 from airflow.utils.dates import days_ago
+#Agregamos operadores que nos permitan que airflow tome distintas decisiones dependiendo de la respuesta de SQL
+from airflow.operators.sql import BranchSQLOperator
 
 def ingest_data():
     hook = PostgresHook(postgres_conn_id='alan_conn')
@@ -51,8 +53,22 @@ with DAG(
                     au INTEGER
                 )
         """)
+    clear = PostgresOperator(task_id='clear',
+        postgres_conn_id='alan_conn',
+        sql="""
+            DELETE FROM monthly_charts_data
+        """
+        )
+    continue_workflow = DummyOperator(task_id = 'continue_workflow')
+    branch = BranchSQLOperator(
+        task_id = 'is_empty',
+        conn_id = 'alan_conn',
+        sql = 'SELECT COUNT(*) AS rows FROM monthly_charts_data',
+        follow_task_ids_if_true = [clear.task_id],
+        follow_task_ids_if_false = [continue_workflow.task_id]
+    )
     load = PythonOperator(task_id='load', python_callable = ingest_data)
     end_workflow = DummyOperator(task_id='end_workflow')
 
     #We setup here the order of the tasks
-    start_workflow >> validate >> prepare >> load >> end_workflow
+    start_workflow >> validate >> prepare >> branch >> [clear, continue_workflow] >> load >> end_workflow
