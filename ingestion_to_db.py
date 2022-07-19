@@ -16,7 +16,7 @@ from airflow.providers.google.cloud.sensors.gcs import GCSObjectExistenceSensor
 from airflow.providers.google.cloud.hooks.gcs import GCSHook
 
 def ingest_data():
-    gcs_hook = GCSHook(google_cloud_conn_id = 'google_default')
+    gcs_hook = GCSHook(gcp_conn_id = 'google_default')
     psql_hook = PostgresHook(postgres_conn_id='alan_conn')
     file = gcs_hook.download_file(key='chart-data.csv', bucket_name = 'us-central1-de-bootcamp-786ac1aa-bucket')
     psql_hook.bulk_load(table = 'monthly_charts_data', tmp_file = file)
