@@ -1,3 +1,7 @@
+""" Data Ingestion Workflow
+
+Author: Alan Uriel Camargo Cantellan
+"""
 from airflow.models import DAG
 from airflow.operators.dummy import DummyOperator
 #El PythonOperator nos permite ejecutar funciones Python dentro del workflow
@@ -24,6 +28,7 @@ def ingest_data():
 with DAG(
     'db_ingestion', start_date=days_ago(1), schedule_interval='@once'
     ) as dag:
+    dag.doc_md = __doc__
     start_workflow = DummyOperator(task_id='start_workflow')
     validate = GCSObjectExistenceSensor(task_id='validate',
         google_cloud_conn_id = 'google_default',
