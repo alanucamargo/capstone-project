@@ -53,14 +53,14 @@ with DAG(
     clear = PostgresOperator(task_id='clear',
         postgres_conn_id='alan_conn',
         sql="""
-            DELETE FROM user_purchase
+            DELETE FROM imaginary_company.user_purchase
         """
         )
     continue_workflow = DummyOperator(task_id = 'continue_workflow')
     branch = BranchSQLOperator(
         task_id = 'is_empty',
         conn_id = 'alan_conn',
-        sql = 'SELECT COUNT(*) AS rows FROM user_purchase',
+        sql = 'SELECT COUNT(*) AS rows FROM imaginary_company.user_purchase',
         follow_task_ids_if_true = [clear.task_id],
         follow_task_ids_if_false = [continue_workflow.task_id]
     )
