@@ -26,7 +26,7 @@ def ingest_data():
     psql_hook.bulk_load(table = 'user_purchase', tmp_file = file)
 
 with DAG(
-    'db_ingestion', start_date=days_ago(1), schedule_interval='@once'
+    'setup_postgres', start_date=days_ago(1), schedule_interval='@once'
     ) as dag:
     dag.doc_md = __doc__
     start_workflow = DummyOperator(task_id='start_workflow')
