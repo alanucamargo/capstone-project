@@ -23,7 +23,7 @@ def ingest_data():
     gcs_hook = GCSHook(gcp_conn_id = 'google_default')
     psql_hook = PostgresHook(postgres_conn_id='alan_conn')
     file = gcs_hook.download(object_name='user_purchase.csv', bucket_name='us-central1-de-bootcamp-786ac1aa-bucket', filename='file.csv')
-    psql_hook.bulk_load(table = 'user_purchase', tmp_file = file)
+    psql_hook.bulk_load(table = 'imaginary_company.user_purchase', tmp_file = file)
 
 with DAG(
     'setup_postgres', start_date=days_ago(1), schedule_interval='@once'
