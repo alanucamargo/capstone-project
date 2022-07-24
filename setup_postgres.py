@@ -39,7 +39,7 @@ with DAG(
         sql="""
             CREATE SCHEMA IF NOT EXISTS imaginary_company;
             CREATE TABLE IF NOT EXISTS imaginary_company.user_purchase (
-               invoice_number varchar(10),
+               invoice_number varchar(20),
                stock_code varchar(20),
                detail varchar(1000),
                quantity int,
