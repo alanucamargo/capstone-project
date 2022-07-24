@@ -22,7 +22,7 @@ from airflow.providers.google.cloud.hooks.gcs import GCSHook
 def ingest_data():
     gcs_hook = GCSHook(gcp_conn_id = 'google_default')
     psql_hook = PostgresHook(postgres_conn_id='alan_conn')
-    file = gcs_hook.download(object_name='user_purchase.csv', bucket_name='us-central1-de-bootcamp-786ac1aa-bucket', filename='file.csv')
+    file = gcs_hook.download(object_name='data/user_purchase.csv', bucket_name='us-central1-de-bootcamp-786ac1aa-bucket', filename='file.csv')
     psql_hook.bulk_load(table = 'imaginary_company.user_purchase', tmp_file = file)
 
 with DAG(
@@ -33,7 +33,7 @@ with DAG(
     validate = GCSObjectExistenceSensor(task_id='validate',
         google_cloud_conn_id = 'google_default',
         bucket = 'us-central1-de-bootcamp-786ac1aa-bucket',
-        object = 'user_purchase.csv')
+        object = 'data/user_purchase.csv')
     prepare = PostgresOperator(task_id='prepare',
         postgres_conn_id='alan_conn',
         sql="""
