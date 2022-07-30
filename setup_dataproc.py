@@ -44,14 +44,14 @@ with DAG(
                     cluster_config = CLUSTER_CONFIG,
                     region = REGION,
                     cluster_name = CLUSTER_NAME,
-                    gcp_conn_id='google_cloud_default')
+                    gcp_conn_id='google_default')
     validate = DummyOperator(task_id='validate')
     prepare = DummyOperator(task_id='prepare')
     load = DummyOperator(task_id='load')
     delete_cluster = DataprocDeleteClusterOperator(task_id='delete_cluster',
                     region = REGION,
                     cluster_name = CLUSTER_NAME,
-                    gcp_conn_id='google_cloud_default')
+                    gcp_conn_id='google_default')
     end_workflow = DummyOperator(task_id='end_workflow')
 
     #We setup here the order of the tasks
