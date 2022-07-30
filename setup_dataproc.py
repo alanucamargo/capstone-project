@@ -22,9 +22,6 @@ CLUSTER_NAME = 'dataproc_alan'
 CLUSTER_CONFIG = {
   "configBucket": "us-central1-de-bootcamp-786ac1aa-bucket",
   "tempBucket": "us-central1-de-bootcamp-786ac1aa-bucket",
-  "gceClusterConfig": {
-    object (GceClusterConfig)
-  },
   "masterConfig": {
       "numInstances": 1,
       "machineTypeUri": "n1-standard-1",
