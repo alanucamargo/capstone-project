@@ -13,19 +13,24 @@ from airflow.utils.trigger_rule import TriggerRule
 from airflow.providers.google.cloud.sensors.gcs import GCSObjectExistenceSensor
 from airflow.providers.google.cloud.hooks.gcs import GCSHook
 
+#Consideramos las librerias para trabajar con dataproc
+from airflow.providers.google.cloud.operators.dataproc import DataprocCreateClusterOperator, DataprocDeleteClusterOperator
+
 
 with DAG(
-    'setup_dataproc', start_date=days_ago(1), schedule_interval='@once'
+    'setup_postgres', start_date=days_ago(1), schedule_interval='@once'
     ) as dag:
     dag.doc_md = __doc__
     start_workflow = DummyOperator(task_id='start_workflow')
+    create_cluster = DummyOperator(task_id='create_cluster')
     validate = DummyOperator(task_id='validate')
     prepare = DummyOperator(task_id='prepare')
     clear = DummyOperator(task_id='clear')
     continue_workflow = DummyOperator(task_id = 'continue_workflow')
     branch = DummyOperator(task_id = 'is_empty')
     load = DummyOperator(task_id='load')
+    delete_cluster = DummyOperator(task_id='delete_cluster')
     end_workflow = DummyOperator(task_id='end_workflow')
 
     #We setup here the order of the tasks
-    start_workflow >> validate >> prepare >> load >> end_workflow
+    start_workflow >> create_cluster >> validate >> prepare >> load >> delete_cluster >> end_workflow
