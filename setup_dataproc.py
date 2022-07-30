@@ -28,4 +28,4 @@ with DAG(
     end_workflow = DummyOperator(task_id='end_workflow')
 
     #We setup here the order of the tasks
-    start_workflow >> validate >> prepare >> branch >> [clear, continue_workflow] >> load >> end_workflow
+    start_workflow >> validate >> prepare >> load >> end_workflow
