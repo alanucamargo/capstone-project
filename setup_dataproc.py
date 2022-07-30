@@ -15,7 +15,7 @@ from airflow.providers.google.cloud.hooks.gcs import GCSHook
 
 
 with DAG(
-    'setup_postgres', start_date=days_ago(1), schedule_interval='@once'
+    'setup_dataproc', start_date=days_ago(1), schedule_interval='@once'
     ) as dag:
     dag.doc_md = __doc__
     start_workflow = DummyOperator(task_id='start_workflow')
