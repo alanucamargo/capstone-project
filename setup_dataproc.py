@@ -20,7 +20,6 @@ REGION = 'us-central1-a'
 CLUSTER_NAME = 'dataproc_alan'
 
 CLUSTER_CONFIG = {
-  "configBucket": "us-central1-de-bootcamp-786ac1aa-bucket",
   "tempBucket": "us-central1-de-bootcamp-786ac1aa-bucket",
   "masterConfig": {
       "numInstances": 1,
