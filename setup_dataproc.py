@@ -16,7 +16,8 @@ from airflow.providers.google.cloud.hooks.gcs import GCSHook
 #Consideramos las librerias para trabajar con dataproc
 from airflow.providers.google.cloud.operators.dataproc import DataprocCreateClusterOperator, DataprocDeleteClusterOperator
 
-REGION = 'us-central1-a'
+ZONE = 'us-central1-a'
+REGION = 'us-central1'
 CLUSTER_NAME = 'dataproc_alan'
 PROJECT_ID = 'tribal-union-354418'
 
@@ -24,7 +25,7 @@ CLUSTER_CONFIG = {
   "config_bucket": "us-central1-de-bootcamp-786ac1aa-bucket",
   "temp_bucket": "us-central1-de-bootcamp-786ac1aa-bucket",
   "gce_cluster_config": {
-      "zone_uri": REGION,
+      "zone_uri": ZONE,
       "network_uri": "default"
   },
   "master_config": {
@@ -46,12 +47,12 @@ with DAG(
     start_workflow = DummyOperator(task_id='start_workflow')
     create_cluster = DataprocCreateClusterOperator(task_id='create_cluster',
                     project_id = PROJECT_ID,
-                    #cluster_config = CLUSTER_CONFIG,
+                    cluster_config = CLUSTER_CONFIG,
                     region = REGION,
                     cluster_name = CLUSTER_NAME,
-                    num_workers=2,
-                    master_machine_type='n1-standard-1',
-                    worker_machine_type='n1-standard-1',
+                    #num_workers=2,
+                    #master_machine_type='n1-standard-1',
+                    #worker_machine_type='n1-standard-1',
                     gcp_conn_id='google_default')
     validate = DummyOperator(task_id='validate')
     prepare = DummyOperator(task_id='prepare')
