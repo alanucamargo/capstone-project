@@ -30,12 +30,12 @@ CLUSTER_CONFIG = {
   },
   "master_config": {
       "num_instances": 1,
-      "machine_type_uri": "n1-standard-1",
+      "machine_type_uri": "n2-standard-4",
       "disk_config": {"boot_disk_type": "pd-standard", "boot_disk_size_gb": 1024}
   },
   "worker_config": {
       "num_instances": 2,
-      "machine_type_uri": "n1-standard-1",
+      "machine_type_uri": "n2-standard-4",
       "disk_config": {"boot_disk_type": "pd-standard", "boot_disk_size_gb": 1024}
   },
 }
@@ -51,8 +51,8 @@ with DAG(
                     region = REGION,
                     cluster_name = CLUSTER_NAME,
                     #num_workers=2,
-                    #master_machine_type='n1-standard-1',
-                    #worker_machine_type='n1-standard-1',
+                    #master_machine_type='n2-standard-4',
+                    #worker_machine_type='n2-standard-4',
                     gcp_conn_id='google_dataproc')
     validate = DummyOperator(task_id='validate')
     prepare = DummyOperator(task_id='prepare')
