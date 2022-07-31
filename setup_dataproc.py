@@ -58,4 +58,4 @@ with DAG(
     end_workflow = DummyOperator(task_id='end_workflow')
 
     #We setup here the order of the tasks
-    start_workflow >> create_cluster >> pyspark_task >> load >> delete_cluster >> end_workflow
+    start_workflow >> create_cluster >> pyspark_task >> delete_cluster >> end_workflow
