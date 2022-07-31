@@ -20,12 +20,12 @@ REGION = 'us-central1-a'
 CLUSTER_NAME = 'dataproc_alan'
 
 CLUSTER_CONFIG = {
-  "masterConfig": {
+  "master_config": {
       "numInstances": 1,
       "machineTypeUri": "n1-standard-1",
       "disk_config": {"boot_disk_type": "pd-standard", "boot_disk_size_gb": 1024}
   },
-  "workerConfig": {
+  "worker_config": {
       "numInstances": 2,
       "machineTypeUri": "n1-standard-1",
       "disk_config": {"boot_disk_type": "pd-standard", "boot_disk_size_gb": 1024}
