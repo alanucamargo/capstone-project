@@ -16,6 +16,7 @@ from airflow.providers.google.cloud.hooks.gcs import GCSHook
 #Consideramos las librerias para trabajar con el capstone-project
 from airflow.providers.google.cloud.operators.dataproc import DataprocCreateClusterOperator, DataprocDeleteClusterOperator, DataprocSubmitJobOperator, DataprocSubmitPySparkJobOperator
 from airflow.operators.python_operator import BranchPythonOperator
+from airflow.providers.google.cloud.transfers.postgres_to_gcs import PostgresToGCSOperator
 
 ZONE = 'us-central1-a'
 REGION = 'us-central1'
