@@ -14,13 +14,14 @@ from airflow.providers.google.cloud.sensors.gcs import GCSObjectExistenceSensor
 from airflow.providers.google.cloud.hooks.gcs import GCSHook
 
 #Consideramos las librerias para trabajar con dataproc
-from airflow.providers.google.cloud.operators.dataproc import DataprocCreateClusterOperator, DataprocDeleteClusterOperator, DataprocSubmitJobOperator
+from airflow.providers.google.cloud.operators.dataproc import DataprocCreateClusterOperator, DataprocDeleteClusterOperator, DataProcPySparkOperator
 
 ZONE = 'us-central1-a'
 REGION = 'us-central1'
 CLUSTER_NAME = 'alandataproc'
 PROJECT_ID = 'tribal-union-354418'
 PYSPARK_JOB = 'https://storage.cloud.google.com/us-central1-de-bootcamp-786ac1aa-bucket/scripts/hello_world.py'
+GOOGLE_CONN_ID = 'google_dataproc'
 
 CLUSTER_CONFIG = {
   "config_bucket": "us-central1-de-bootcamp-786ac1aa-bucket",
@@ -50,13 +51,21 @@ with DAG(
                     cluster_config = CLUSTER_CONFIG,
                     region = REGION,
                     cluster_name = CLUSTER_NAME,
-                    gcp_conn_id='google_dataproc')
-    pyspark_task = DataprocSubmitJobOperator(task_id='pyspark_task',
-                    job=PYSPARK_JOB, region=REGION, project_id=PROJECT_ID)
+                    gcp_conn_id=GOOGLE_CONN_ID)
+    pyspark_task = DataProcPySparkOperator(task_id='pyspark_task',
+                    gcp_conn_id=GOOGLE_CONN_ID,
+                    region=REGION,
+                    main=PYSPARK_JOB,
+                    cluster_name=CLUSTER_NAME,
+                    job_name="job_1",
+                    arguments=[
+                        "-arg1=arg1_value", # or just "arg1_value" for non named args
+                        "-arg2=arg2_value"
+                    ])
     delete_cluster = DataprocDeleteClusterOperator(task_id='delete_cluster',
                     region = REGION,
                     cluster_name = CLUSTER_NAME,
-                    gcp_conn_id='google_dataproc')
+                    gcp_conn_id=GOOGLE_CONN_ID)
     end_workflow = DummyOperator(task_id='end_workflow')
 
     #We setup here the order of the tasks
