@@ -18,6 +18,7 @@ from airflow.providers.google.cloud.operators.dataproc import DataprocCreateClus
 
 REGION = 'us-central1-a'
 CLUSTER_NAME = 'dataproc_alan'
+PROJECT_ID = 'tribal-union-354418'
 
 CLUSTER_CONFIG = {
   "config_bucket": "us-central1-de-bootcamp-786ac1aa-bucket",
@@ -44,10 +45,13 @@ with DAG(
     dag.doc_md = __doc__
     start_workflow = DummyOperator(task_id='start_workflow')
     create_cluster = DataprocCreateClusterOperator(task_id='create_cluster',
-                    #project_id = PROJECT_ID,
-                    cluster_config = CLUSTER_CONFIG,
+                    project_id = PROJECT_ID,
+                    #cluster_config = CLUSTER_CONFIG,
                     region = REGION,
                     cluster_name = CLUSTER_NAME,
+                    num_workers=2,
+                    master_machine_type='n1-standard-1',
+                    worker_machine_type='n1-standard-1',
                     gcp_conn_id='google_default')
     validate = DummyOperator(task_id='validate')
     prepare = DummyOperator(task_id='prepare')
