@@ -14,13 +14,18 @@ from airflow.providers.google.cloud.sensors.gcs import GCSObjectExistenceSensor
 from airflow.providers.google.cloud.hooks.gcs import GCSHook
 
 #Consideramos las librerias para trabajar con dataproc
-from airflow.providers.google.cloud.operators.dataproc import DataprocCreateClusterOperator, DataprocDeleteClusterOperator, DataProcPySparkOperator
+from airflow.providers.google.cloud.operators.dataproc import DataprocCreateClusterOperator, DataprocDeleteClusterOperator, DataprocSubmitJobOperator
 
 ZONE = 'us-central1-a'
 REGION = 'us-central1'
 CLUSTER_NAME = 'alandataproc'
 PROJECT_ID = 'tribal-union-354418'
-PYSPARK_JOB = 'https://storage.cloud.google.com/us-central1-de-bootcamp-786ac1aa-bucket/scripts/hello_world.py'
+PYSPARK_JOB = ''
+PYSPARK_JOB = {
+    "reference": {"project_id": PROJECT_ID},
+    "placement": {"cluster_name": CLUSTER_NAME},
+    "pyspark_job": {"main_python_file_uri": "gs://us-central1-de-bootcamp-786ac1aa-bucket/scripts/hello_world.py"},
+}
 GOOGLE_CONN_ID = 'google_dataproc'
 
 CLUSTER_CONFIG = {
@@ -52,16 +57,10 @@ with DAG(
                     region = REGION,
                     cluster_name = CLUSTER_NAME,
                     gcp_conn_id=GOOGLE_CONN_ID)
-    pyspark_task = DataProcPySparkOperator(task_id='pyspark_task',
-                    gcp_conn_id=GOOGLE_CONN_ID,
+    pyspark_task = DataprocSubmitJobOperator(task_id='pyspark_task',
+                    job=PYSPARK_JOB,
                     region=REGION,
-                    main=PYSPARK_JOB,
-                    cluster_name=CLUSTER_NAME,
-                    job_name="job_1",
-                    arguments=[
-                        "-arg1=arg1_value", # or just "arg1_value" for non named args
-                        "-arg2=arg2_value"
-                    ])
+                    project_id=PROJECT_ID)
     delete_cluster = DataprocDeleteClusterOperator(task_id='delete_cluster',
                     region = REGION,
                     cluster_name = CLUSTER_NAME,
