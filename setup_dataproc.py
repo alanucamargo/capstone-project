@@ -18,7 +18,7 @@ from airflow.providers.google.cloud.operators.dataproc import DataprocCreateClus
 
 ZONE = 'us-central1-a'
 REGION = 'us-central1'
-CLUSTER_NAME = 'dataproc_alan'
+CLUSTER_NAME = 'alandataproc'
 PROJECT_ID = 'tribal-union-354418'
 
 CLUSTER_CONFIG = {
