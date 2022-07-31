@@ -20,14 +20,15 @@ REGION = 'us-central1-a'
 CLUSTER_NAME = 'dataproc_alan'
 
 CLUSTER_CONFIG = {
+  "config_bucket": "us-central1-de-bootcamp-786ac1aa-bucket",
   "master_config": {
-      "numInstances": 1,
-      "machineTypeUri": "n1-standard-1",
+      "num_instances": 1,
+      "machine_type_uri": "n1-standard-1",
       "disk_config": {"boot_disk_type": "pd-standard", "boot_disk_size_gb": 1024}
   },
   "worker_config": {
-      "numInstances": 2,
-      "machineTypeUri": "n1-standard-1",
+      "num_instances": 2,
+      "machine_type_uri": "n1-standard-1",
       "disk_config": {"boot_disk_type": "pd-standard", "boot_disk_size_gb": 1024}
   },
 }
