@@ -21,8 +21,7 @@ from airflow.providers.google.cloud.transfers.postgres_to_gcs import PostgresToG
 GCS_BUCKET = 'us-central1-de-bootcamp-786ac1aa-bucket'
 GCS_OBJECT_PATH = 'data'
 SOURCE_TABLE_NAME = 'imaginary_company.user_purchase'
-POSTGRESS_CONNECTION_ID = 'alan_conn'
-
+POSTGRES_CONNECTION_ID = 'alan_conn'
 
 ZONE = 'us-central1-a'
 REGION = 'us-central1'
