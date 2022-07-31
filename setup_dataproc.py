@@ -25,7 +25,7 @@ PYSPARK_JOB = ''
 PYSPARK_JOB = {
     "reference": {"project_id": PROJECT_ID},
     "placement": {"cluster_name": CLUSTER_NAME},
-    "pyspark_job": {"main_python_file_uri": "gs://us-central1-de-bootcamp-786ac1aa-bucket/scripts/hello_world.py"},
+    "pyspark_job": {"main_python_file_uri": "gs://us-central1-de-bootcamp-786ac1aa-bucket/scripts/script.py"},
 }
 GOOGLE_CONN_ID = 'google_dataproc'
 
