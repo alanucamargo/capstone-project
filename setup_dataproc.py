@@ -65,7 +65,7 @@ with DAG(
                     postgres_conn_id=POSTGRES_CONNECTION_ID,
                     sql=f'SELECT * FROM {SOURCE_TABLE_NAME};',
                     bucket=GCS_BUCKET,
-                    filename=f'{GCS_OBJECT_PATH}/stage/user_purchase.csv',
+                    filename=f'{GCS_OBJECT_PATH}/user_purchase_data.csv',
                     export_format='csv',
                     gzip=False,
                     use_server_side_cursor=False)
