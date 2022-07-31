@@ -18,6 +18,12 @@ from airflow.providers.google.cloud.operators.dataproc import DataprocCreateClus
 from airflow.operators.python_operator import BranchPythonOperator
 from airflow.providers.google.cloud.transfers.postgres_to_gcs import PostgresToGCSOperator
 
+GCS_BUCKET = 'us-central1-de-bootcamp-786ac1aa-bucket'
+GCS_OBJECT_PATH = 'data'
+SOURCE_TABLE_NAME = 'imaginary_company.user_purchase'
+POSTGRESS_CONNECTION_ID = 'alan_conn'
+
+
 ZONE = 'us-central1-a'
 REGION = 'us-central1'
 CLUSTER_NAME = 'alandataproc'
@@ -29,6 +35,7 @@ PYSPARK_JOB = {
     "pyspark_job": {"main_python_file_uri": "gs://us-central1-de-bootcamp-786ac1aa-bucket/scripts/script.py"},
 }
 GOOGLE_CONN_ID = 'google_dataproc'
+
 
 CLUSTER_CONFIG = {
   "config_bucket": "us-central1-de-bootcamp-786ac1aa-bucket",
@@ -54,21 +61,34 @@ with DAG(
     ) as dag:
     dag.doc_md = __doc__
     start_workflow = DummyOperator(task_id='start_workflow')
-    create_cluster = DataprocCreateClusterOperator(task_id='create_cluster',
+    postgres_to_gcs_task = PostgresToGCSOperator(
+                    task_id='postgres_to_gcs',
+                    postgres_conn_id=POSTGRES_CONNECTION_ID,
+                    sql=f'SELECT * FROM {SOURCE_TABLE_NAME};',
+                    bucket=GCS_BUCKET,
+                    filename=f'{GCS_OBJECT_PATH}/stage/user_purchase.csv',
+                    export_format='csv',
+                    gzip=False,
+                    use_server_side_cursor=False)
+    create_cluster = DataprocCreateClusterOperator(
+                    task_id='create_cluster',
                     cluster_config = CLUSTER_CONFIG,
                     region = REGION,
                     cluster_name = CLUSTER_NAME,
                     gcp_conn_id=GOOGLE_CONN_ID)
-    pyspark_task = DataprocSubmitJobOperator(task_id='pyspark_task',
+    pyspark_task = DataprocSubmitJobOperator(
+                    task_id='pyspark_task',
                     job=PYSPARK_JOB,
                     region=REGION,
                     project_id=PROJECT_ID,
                     gcp_conn_id=GOOGLE_CONN_ID)
-    delete_cluster = DataprocDeleteClusterOperator(task_id='delete_cluster',
+    delete_cluster = DataprocDeleteClusterOperator(
+                    task_id='delete_cluster',
                     region = REGION,
                     cluster_name = CLUSTER_NAME,
                     gcp_conn_id=GOOGLE_CONN_ID)
-    end_workflow = DummyOperator(task_id='end_workflow')
+    end_workflow = DummyOperator(
+                    task_id='end_workflow')
 
     #We setup here the order of the tasks
-    start_workflow >> create_cluster >> pyspark_task >> delete_cluster >> end_workflow
+    start_workflow >> postgres_to_gcs_task >> create_cluster >> pyspark_task >> delete_cluster >> end_workflow
