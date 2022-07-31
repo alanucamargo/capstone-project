@@ -13,8 +13,9 @@ from airflow.utils.trigger_rule import TriggerRule
 from airflow.providers.google.cloud.sensors.gcs import GCSObjectExistenceSensor
 from airflow.providers.google.cloud.hooks.gcs import GCSHook
 
-#Consideramos las librerias para trabajar con dataproc
-from airflow.providers.google.cloud.operators.dataproc import DataprocCreateClusterOperator, DataprocDeleteClusterOperator, DataprocSubmitJobOperator
+#Consideramos las librerias para trabajar con el capstone-project
+from airflow.providers.google.cloud.operators.dataproc import DataprocCreateClusterOperator, DataprocDeleteClusterOperator, DataprocSubmitJobOperator, DataprocSubmitPySparkJobOperator
+from airflow.operators.python_operator import BranchPythonOperator
 
 ZONE = 'us-central1-a'
 REGION = 'us-central1'
@@ -60,7 +61,8 @@ with DAG(
     pyspark_task = DataprocSubmitJobOperator(task_id='pyspark_task',
                     job=PYSPARK_JOB,
                     region=REGION,
-                    project_id=PROJECT_ID)
+                    project_id=PROJECT_ID,
+                    gcp_conn_id=GOOGLE_CONN_ID)
     delete_cluster = DataprocDeleteClusterOperator(task_id='delete_cluster',
                     region = REGION,
                     cluster_name = CLUSTER_NAME,
