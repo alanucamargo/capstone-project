@@ -14,7 +14,7 @@ from airflow.providers.google.cloud.sensors.gcs import GCSObjectExistenceSensor
 from airflow.providers.google.cloud.hooks.gcs import GCSHook
 
 #Consideramos las librerias para trabajar con dataproc
-from airflow.providers.google.cloud.operators.dataproc import DataprocCreateClusterOperator, DataprocDeleteClusterOperator
+from airflow.providers.google.cloud.operators.dataproc import DataprocCreateClusterOperator, DataprocDeleteClusterOperator, DataprocSubmitJobOperator
 
 ZONE = 'us-central1-a'
 REGION = 'us-central1'
@@ -46,17 +46,11 @@ with DAG(
     dag.doc_md = __doc__
     start_workflow = DummyOperator(task_id='start_workflow')
     create_cluster = DataprocCreateClusterOperator(task_id='create_cluster',
-                    #project_id = PROJECT_ID,
                     cluster_config = CLUSTER_CONFIG,
                     region = REGION,
                     cluster_name = CLUSTER_NAME,
-                    #num_workers=2,
-                    #master_machine_type='n2-standard-4',
-                    #worker_machine_type='n2-standard-4',
                     gcp_conn_id='google_dataproc')
-    validate = DummyOperator(task_id='validate')
-    prepare = DummyOperator(task_id='prepare')
-    load = DummyOperator(task_id='load')
+    pyspark_task = DummyOperator(task_id='pyspark_task')
     delete_cluster = DataprocDeleteClusterOperator(task_id='delete_cluster',
                     region = REGION,
                     cluster_name = CLUSTER_NAME,
@@ -64,4 +58,4 @@ with DAG(
     end_workflow = DummyOperator(task_id='end_workflow')
 
     #We setup here the order of the tasks
-    start_workflow >> create_cluster >> validate >> prepare >> load >> delete_cluster >> end_workflow
+    start_workflow >> create_cluster >> pyspark_task >> load >> delete_cluster >> end_workflow
