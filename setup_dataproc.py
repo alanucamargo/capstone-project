@@ -20,6 +20,7 @@ ZONE = 'us-central1-a'
 REGION = 'us-central1'
 CLUSTER_NAME = 'alandataproc'
 PROJECT_ID = 'tribal-union-354418'
+PYSPARK_JOB = 'https://storage.cloud.google.com/us-central1-de-bootcamp-786ac1aa-bucket/scripts/hello_world.py'
 
 CLUSTER_CONFIG = {
   "config_bucket": "us-central1-de-bootcamp-786ac1aa-bucket",
@@ -50,7 +51,8 @@ with DAG(
                     region = REGION,
                     cluster_name = CLUSTER_NAME,
                     gcp_conn_id='google_dataproc')
-    pyspark_task = DummyOperator(task_id='pyspark_task')
+    pyspark_task = DataprocSubmitJobOperator(task_id='pyspark_task',
+                    job=PYSPARK_JOB, region=REGION, project_id=PROJECT_ID)
     delete_cluster = DataprocDeleteClusterOperator(task_id='delete_cluster',
                     region = REGION,
                     cluster_name = CLUSTER_NAME,
