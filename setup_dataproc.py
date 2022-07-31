@@ -46,7 +46,7 @@ with DAG(
     dag.doc_md = __doc__
     start_workflow = DummyOperator(task_id='start_workflow')
     create_cluster = DataprocCreateClusterOperator(task_id='create_cluster',
-                    project_id = PROJECT_ID,
+                    #project_id = PROJECT_ID,
                     cluster_config = CLUSTER_CONFIG,
                     region = REGION,
                     cluster_name = CLUSTER_NAME,
