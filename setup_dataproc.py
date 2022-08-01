@@ -60,6 +60,9 @@ with DAG(
     ) as dag:
     dag.doc_md = __doc__
     start_workflow = DummyOperator(task_id='start_workflow')
+    validate_object = DummyOperator(task_id='validate_object')
+    eliminate_object = DummyOperator(task_id='eliminate_object')
+    continue_to_create_object = DummyOperator(task_id='continue_to_create_object')
     postgres_to_gcs_task = PostgresToGCSOperator(
                     task_id='postgres_to_gcs',
                     postgres_conn_id=POSTGRES_CONNECTION_ID,
@@ -85,9 +88,10 @@ with DAG(
                     task_id='delete_cluster',
                     region = REGION,
                     cluster_name = CLUSTER_NAME,
-                    gcp_conn_id=GOOGLE_CONN_ID)
+                    gcp_conn_id=GOOGLE_CONN_ID,
+                    trigger_rule = TriggerRule.ALL_DONE)
     end_workflow = DummyOperator(
                     task_id='end_workflow')
 
     #We setup here the order of the tasks
-    start_workflow >> postgres_to_gcs_task >> create_cluster >> pyspark_task >> delete_cluster >> end_workflow
+    start_workflow >> validate_object >> [eliminate_object, continue_to_create_object] >> postgres_to_gcs_task >> create_cluster >> pyspark_task >> delete_cluster >> end_workflow
