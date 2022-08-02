@@ -102,7 +102,7 @@ with DAG(
                     gcp_conn_id=GOOGLE_CONN_BIGQUERY_ID,
                     exists_ok=True)
     review_logs_external_table = BigQueryCreateExternalTableOperator(
-                    task_id="create_external_table",
+                    task_id="review_logs_external_table",
                     destination_project_dataset_table=f"{DATASET_NAME}.review_logs",
                     bucket=GCS_BUCKET,
                     source_objects=['gs://us-central1-de-bootcamp-786ac1aa-bucket/stage/review_logs.parquet'],
@@ -113,4 +113,4 @@ with DAG(
 
     #We setup here the order of the tasks
     #start_workflow >> validate_object >> [eliminate_object, continue_to_create_object] >> postgres_to_gcs_task >> create_cluster >> pyspark_task >> delete_cluster >> end_workflow
-    start_workflow >> create_dataset >> review_logs_table >> end_workflow
+    start_workflow >> create_dataset >> review_logs_external_table >> end_workflow
