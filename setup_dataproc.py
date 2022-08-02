@@ -37,7 +37,7 @@ PYSPARK_JOB = {
     "pyspark_job": {"main_python_file_uri": "gs://us-central1-de-bootcamp-786ac1aa-bucket/scripts/script.py"},
 }
 GOOGLE_CONN_ID = 'google_dataproc'
-GOOGLE_CONN_BIGQUERY_ID = 'google_default'
+GOOGLE_CONN_BIGQUERY_ID = 'google_bigquery'
 DATASET_NAME = 'DW'
 
 CLUSTER_CONFIG = {
