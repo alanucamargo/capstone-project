@@ -38,6 +38,7 @@ PYSPARK_JOB = {
 }
 GOOGLE_CONN_ID = 'google_dataproc'
 GOOGLE_CONN_BIGQUERY_ID = 'google_default'
+DATASET_NAME = 'DW'
 
 CLUSTER_CONFIG = {
   "config_bucket": "us-central1-de-bootcamp-786ac1aa-bucket",
