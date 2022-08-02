@@ -18,6 +18,9 @@ from airflow.providers.google.cloud.operators.dataproc import DataprocCreateClus
 from airflow.operators.python_operator import BranchPythonOperator
 from airflow.providers.google.cloud.transfers.postgres_to_gcs import PostgresToGCSOperator
 
+#Librerias para manejar BigQuery
+from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateEmptyDatasetOperator
+
 GCS_BUCKET = 'us-central1-de-bootcamp-786ac1aa-bucket'
 GCS_OBJECT_PATH = 'data'
 SOURCE_TABLE_NAME = 'imaginary_company.user_purchase'
@@ -34,7 +37,7 @@ PYSPARK_JOB = {
     "pyspark_job": {"main_python_file_uri": "gs://us-central1-de-bootcamp-786ac1aa-bucket/scripts/script.py"},
 }
 GOOGLE_CONN_ID = 'google_dataproc'
-
+GOOGLE_CONN_BIGQUERY_ID = 'google_default'
 
 CLUSTER_CONFIG = {
   "config_bucket": "us-central1-de-bootcamp-786ac1aa-bucket",
@@ -90,8 +93,14 @@ with DAG(
                     cluster_name = CLUSTER_NAME,
                     gcp_conn_id=GOOGLE_CONN_ID,
                     trigger_rule = TriggerRule.ALL_DONE)
+    create_dataset = BigQueryCreateEmptyDatasetOperator(
+                    task_id="create_dataset",
+                    dataset_id=DATASET_NAME,
+                    gcp_conn_id=GOOGLE_CONN_BIGQUERY_ID,
+                    exists_ok=True)
     end_workflow = DummyOperator(
                     task_id='end_workflow')
 
     #We setup here the order of the tasks
-    start_workflow >> validate_object >> [eliminate_object, continue_to_create_object] >> postgres_to_gcs_task >> create_cluster >> pyspark_task >> delete_cluster >> end_workflow
+    #start_workflow >> validate_object >> [eliminate_object, continue_to_create_object] >> postgres_to_gcs_task >> create_cluster >> pyspark_task >> delete_cluster >> end_workflow
+    start_workflow >> create_dataset >> end_workflow
