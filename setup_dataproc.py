@@ -64,6 +64,7 @@ with DAG(
     ) as dag:
     dag.doc_md = __doc__
     start_workflow = DummyOperator(task_id='start_workflow')
+    """
     validate_object = DummyOperator(task_id='validate_object')
     eliminate_object = DummyOperator(task_id='eliminate_object')
     continue_to_create_object = DummyOperator(task_id='continue_to_create_object')
@@ -94,6 +95,7 @@ with DAG(
                     cluster_name = CLUSTER_NAME,
                     gcp_conn_id=GOOGLE_CONN_ID,
                     trigger_rule = TriggerRule.ALL_DONE)
+                    """
     create_dataset = BigQueryCreateEmptyDatasetOperator(
                     task_id="create_dataset",
                     dataset_id=DATASET_NAME,
