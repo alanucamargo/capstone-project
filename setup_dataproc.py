@@ -19,7 +19,7 @@ from airflow.operators.python_operator import BranchPythonOperator
 from airflow.providers.google.cloud.transfers.postgres_to_gcs import PostgresToGCSOperator
 
 #Librerias para manejar BigQuery
-from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateEmptyDatasetOperator, BigQueryCreateExternalTableOperator, BigQueryCreateEmptyTableOperator, GCSToBigQueryOperator
+from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateEmptyDatasetOperator, BigQueryCreateExternalTableOperator, BigQueryCreateEmptyTableOperator
 
 GCS_BUCKET = 'us-central1-de-bootcamp-786ac1aa-bucket'
 GCS_OBJECT_PATH = 'data'
