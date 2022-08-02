@@ -19,7 +19,7 @@ from airflow.operators.python_operator import BranchPythonOperator
 from airflow.providers.google.cloud.transfers.postgres_to_gcs import PostgresToGCSOperator
 
 #Librerias para manejar BigQuery
-from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateEmptyDatasetOperator
+from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateEmptyDatasetOperator, BigQueryCreateExternalTableOperator, BigQueryCreateEmptyTableOperator, GCSToBigQueryOperator
 
 GCS_BUCKET = 'us-central1-de-bootcamp-786ac1aa-bucket'
 GCS_OBJECT_PATH = 'data'
@@ -101,9 +101,15 @@ with DAG(
                     dataset_id=DATASET_NAME,
                     gcp_conn_id=GOOGLE_CONN_BIGQUERY_ID,
                     exists_ok=True)
+    review_logs_table = BigQueryCreateExternalTableOperator(
+                    task_id="create_external_table",
+                    destination_project_dataset_table=f"{DATASET_NAME}.external_table",
+                    bucket=GCS_BUCKET,
+                    source_objects=['gs://us-central1-de-bootcamp-786ac1aa-bucket/stage/review_logs.parquet'],
+                    gcp_conn_id=GOOGLE_CONN_BIGQUERY_ID)
     end_workflow = DummyOperator(
                     task_id='end_workflow')
 
     #We setup here the order of the tasks
     #start_workflow >> validate_object >> [eliminate_object, continue_to_create_object] >> postgres_to_gcs_task >> create_cluster >> pyspark_task >> delete_cluster >> end_workflow
-    start_workflow >> create_dataset >> end_workflow
+    start_workflow >> create_dataset >> review_logs_table >> end_workflow
