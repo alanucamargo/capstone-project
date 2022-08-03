@@ -106,7 +106,17 @@ with DAG(
                     bucket=GCS_BUCKET,
                     destination_project_dataset_table=f"{DATASET_NAME}.review_logs",
                     source_objects=['gs://us-central1-de-bootcamp-786ac1aa-bucket/stage/review_logs.parquet'],
-                    google_cloud_storage_conn_id='google_default')
+                    google_cloud_storage_conn_id='google_default',
+                    schema_fields=[
+                        {"name": "log_id", "type": "INTEGER"},
+                        {"name": "log_date", "type": "STRING"},
+                        {"name": "device", "type": "STRING"},
+                        {"name": "os", "type": "STRING"},
+                        {"name": "location", "type": "STRING"},
+                        {"name": "browser", "type": "STRING"},
+                        {"name": "ip", "type": "STRING"},
+                        {"name": "phone_number", "type": "STRING"},
+                    ])
     end_workflow = DummyOperator(
                     task_id='end_workflow')
 
