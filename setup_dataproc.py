@@ -105,12 +105,12 @@ with DAG(
                     task_id="review_logs_external_table",
                     bucket=GCS_BUCKET,
                     destination_project_dataset_table=f"{DATASET_NAME}.review_logs",
-                    source_objects=['stage/review_logs.parquet'],
+                    source_objects=['stage/review_logs.parquet/part-00000-e8903f12-3bb1-4c43-a3ae-46ea5ab5d796-c000.snappy.parquet'],
                     google_cloud_storage_conn_id='google_bigquery',
                     source_format='PARQUET')
     end_workflow = DummyOperator(
                     task_id='end_workflow')
-
+gs://us-central1-de-bootcamp-786ac1aa-bucket/stage/review_logs.parquet
     #We setup here the order of the tasks
     #start_workflow >> validate_object >> [eliminate_object, continue_to_create_object] >> postgres_to_gcs_task >> create_cluster >> pyspark_task >> delete_cluster >> create_dataset >> review_logs_external_table >> end_workflow
     start_workflow >> create_dataset >> review_logs_external_table >> end_workflow
