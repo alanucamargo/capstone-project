@@ -64,7 +64,7 @@ with DAG(
     ) as dag:
     dag.doc_md = __doc__
     start_workflow = DummyOperator(task_id='start_workflow')
-    """
+ #   """
     validate_object = DummyOperator(task_id='validate_object')
     eliminate_object = DummyOperator(task_id='eliminate_object')
     continue_to_create_object = DummyOperator(task_id='continue_to_create_object')
@@ -95,7 +95,7 @@ with DAG(
                     cluster_name = CLUSTER_NAME,
                     gcp_conn_id=GOOGLE_CONN_ID,
                     trigger_rule = TriggerRule.ALL_DONE)
-                    """
+#                    """
     create_dataset = BigQueryCreateEmptyDatasetOperator(
                     task_id="create_dataset",
                     dataset_id=DATASET_NAME,
@@ -111,5 +111,5 @@ with DAG(
                     task_id='end_workflow')
 
     #We setup here the order of the tasks
-    #start_workflow >> validate_object >> [eliminate_object, continue_to_create_object] >> postgres_to_gcs_task >> create_cluster >> pyspark_task >> delete_cluster >> end_workflow
-    start_workflow >> create_dataset >> review_logs_external_table >> end_workflow
+    start_workflow >> validate_object >> [eliminate_object, continue_to_create_object] >> postgres_to_gcs_task >> create_cluster >> pyspark_task >> delete_cluster >> create_dataset >> review_logs_external_table >> end_workflow
+    #start_workflow >> create_dataset >> review_logs_external_table >> end_workflow
