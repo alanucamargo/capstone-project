@@ -105,8 +105,21 @@ with DAG(
                     task_id="review_logs_external_table",
                     bucket=GCS_BUCKET,
                     destination_project_dataset_table=f"{DATASET_NAME}.review_logs",
-                    #source_objects=['stage/review_logs.parquet/part-00000-e8903f12-3bb1-4c43-a3ae-46ea5ab5d796-c000.snappy.parquet'],
                     source_objects=['stage/review_logs.parquet/*.parquet'],
+                    google_cloud_storage_conn_id='google_bigquery',
+                    source_format='PARQUET')
+    movie_review_external_table = BigQueryCreateExternalTableOperator(
+                    task_id="movie_review_external_table",
+                    bucket=GCS_BUCKET,
+                    destination_project_dataset_table=f"{DATASET_NAME}.movie_review",
+                    source_objects=['stage/movie_review.parquet/*.parquet'],
+                    google_cloud_storage_conn_id='google_bigquery',
+                    source_format='PARQUET')
+    user_purchase_external_table = BigQueryCreateExternalTableOperator(
+                    task_id="user_purchase_external_table",
+                    bucket=GCS_BUCKET,
+                    destination_project_dataset_table=f"{DATASET_NAME}.user_purchase",
+                    source_objects=['stage/user_purchase.parquet/*.parquet'],
                     google_cloud_storage_conn_id='google_bigquery',
                     source_format='PARQUET')
     end_workflow = DummyOperator(
@@ -114,4 +127,4 @@ with DAG(
 
     #We setup here the order of the tasks
     #start_workflow >> validate_object >> [eliminate_object, continue_to_create_object] >> postgres_to_gcs_task >> create_cluster >> pyspark_task >> delete_cluster >> create_dataset >> review_logs_external_table >> end_workflow
-    start_workflow >> create_dataset >> review_logs_external_table >> end_workflow
+    start_workflow >> create_dataset >> [review_logs_external_table, movie_review_external_table, user_purchase_external_table] >> end_workflow
