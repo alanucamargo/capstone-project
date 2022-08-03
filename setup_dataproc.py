@@ -103,10 +103,9 @@ with DAG(
                     exists_ok=True)
     review_logs_external_table = BigQueryCreateExternalTableOperator(
                     task_id="review_logs_external_table",
-                    destination_project_dataset_table=f"{DATASET_NAME}.review_logs",
                     bucket=GCS_BUCKET,
+                    destination_project_dataset_table=f"{DATASET_NAME}.review_logs",
                     source_objects=['gs://us-central1-de-bootcamp-786ac1aa-bucket/stage/review_logs.parquet'],
-                    gcp_conn_id=GOOGLE_CONN_BIGQUERY_ID,
                     google_cloud_storage_conn_id='google_default')
     end_workflow = DummyOperator(
                     task_id='end_workflow')
