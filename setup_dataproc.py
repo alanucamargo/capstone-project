@@ -105,7 +105,7 @@ with DAG(
                     task_id="review_logs_external_table",
                     bucket=GCS_BUCKET,
                     destination_project_dataset_table=f"{DATASET_NAME}.review_logs",
-                    source_objects=['/stage/review_logs.parquet'],
+                    source_objects=['stage/review_logs.parquet'],
                     google_cloud_storage_conn_id='google_bigquery',
                     source_format='PARQUET')
     end_workflow = DummyOperator(
