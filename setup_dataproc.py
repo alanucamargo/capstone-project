@@ -107,16 +107,7 @@ with DAG(
                     destination_project_dataset_table=f"{DATASET_NAME}.review_logs",
                     source_objects=['/stage/review_logs.parquet'],
                     google_cloud_storage_conn_id='google_bigquery',
-                    schema_fields=[
-                        {"name": "log_id", "type": "INTEGER"},
-                        {"name": "log_date", "type": "STRING"},
-                        {"name": "device", "type": "STRING"},
-                        {"name": "os", "type": "STRING"},
-                        {"name": "location", "type": "STRING"},
-                        {"name": "browser", "type": "STRING"},
-                        {"name": "ip", "type": "STRING"},
-                        {"name": "phone_number", "type": "STRING"},
-                    ])
+                    source_format='PARQUET')
     end_workflow = DummyOperator(
                     task_id='end_workflow')
 
