@@ -19,7 +19,7 @@ from airflow.operators.python_operator import BranchPythonOperator
 from airflow.providers.google.cloud.transfers.postgres_to_gcs import PostgresToGCSOperator
 
 #Librerias para manejar BigQuery
-from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateEmptyDatasetOperator, BigQueryCreateExternalTableOperator, BigQueryCreateEmptyTableOperator
+from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateEmptyDatasetOperator, BigQueryCreateExternalTableOperator, BigQueryCreateEmptyTableOperator, BigQueryCreateEmptyTableOperator
 
 GCS_BUCKET = 'us-central1-de-bootcamp-786ac1aa-bucket'
 GCS_OBJECT_PATH = 'data'
@@ -64,9 +64,6 @@ with DAG(
     ) as dag:
     dag.doc_md = __doc__
     start_workflow = DummyOperator(task_id='start_workflow')
-    validate_object = DummyOperator(task_id='validate_object')
-    eliminate_object = DummyOperator(task_id='eliminate_object')
-    continue_to_create_object = DummyOperator(task_id='continue_to_create_object')
     postgres_to_gcs_task = PostgresToGCSOperator(
                     task_id='postgres_to_gcs',
                     postgres_conn_id=POSTGRES_CONNECTION_ID,
@@ -126,5 +123,5 @@ with DAG(
                     task_id='end_workflow')
 
     #We setup here the order of the tasks
-    start_workflow >> validate_object >> [eliminate_object, continue_to_create_object] >> postgres_to_gcs_task >> create_cluster >> pyspark_task >> delete_cluster >> create_dataset >> [review_logs_external_table, movie_review_external_table, user_purchase_external_table] >> create_materialized_view >> end_workflow
+    start_workflow >> postgres_to_gcs_task >> create_cluster >> pyspark_task >> delete_cluster >> create_dataset >> [review_logs_external_table, movie_review_external_table, user_purchase_external_table] >> create_materialized_view >> end_workflow
     #start_workflow >> create_dataset >> [review_logs_external_table, movie_review_external_table, user_purchase_external_table] >> end_workflow
